@@ -1,4 +1,4 @@
-<p align="center"># Web-Widget --GNU General Public License v3.0 -- @Copyright 2023 by Caio Silva</p>
+<p align="center"># Web-Widget --GNU General Public License v3.0 -- @Copyright 2023 by Caio Silva signed as Sunundumused</p>
 <p align="center">Basic Floating Widget WebBrowser App for Desktop developed by me.</p>
 
 <p align="center">--</p>
