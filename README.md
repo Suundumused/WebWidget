@@ -1,5 +1,5 @@
 <p align="center"># Web-Widget</p>
-<p align="center">Basic Floating Widget App for Desktop developed by me.</p>
+<p align="center">Basic Floating Widget WebBrowser App for Desktop developed by me.</p>
 
 <p align="center">support with donation PIX or PayPal</p>
 
