@@ -189,25 +189,29 @@ class MWindow(QMainWindow):
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Cache')):
                 shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Cache')))
         except:
-            win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Cache": Access is denied.', 'Error')
+            #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Cache": Access is denied.', 'Error')
+            time.sleep(3)
            
         try:                
              if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage')):
                  shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage')))
         except:
-             win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Storage": Access is denied.', 'Error')
-            
+             #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Storage": Access is denied.', 'Error')
+            time.sleep(3)
+
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropCache')):
                 shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropCache')))
         except:
-            win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\DropCache": Access is denied.', 'Error')
+            #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\DropCache": Access is denied.', 'Error')
+            time.sleep(3)
             
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropStorage')):
                 shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropStorage')))
         except:
-            win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\DropStorage": Access is denied.', 'Error') 
+            #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\DropStorage": Access is denied.', 'Error') 
+            time.sleep(3)
         
         MainVariables.openSaveFile()
 
@@ -473,7 +477,7 @@ class MWindow(QMainWindow):
         self.close()
         quit()
 
-time.sleep(0.25)
+time.sleep(1.0)
 
 if __name__ == "__main__":    
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
