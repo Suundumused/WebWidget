@@ -44,7 +44,37 @@ class Variables(object):
     root = tk.Tk()
     
     width = root.winfo_screenwidth()
-    height = root.winfo_screenheight()      
+    height = root.winfo_screenheight()  
+    
+    def button_clicked():
+        cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+        cwd=cwd.replace(r'binaries', r'ico\ico48.ico')
+        
+        dlg = QMessageBox()
+        dlg.setWindowTitle("Restart to apply?")
+        dlg.setText("The app needs to be restarted to apply some settings, restart now?")
+        dlg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dlg.setIcon(QMessageBox.Question)
+        dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        
+        button = dlg.exec()
+
+        if button == QMessageBox.Yes:
+            Variables.needExit=True
+
+            cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+            cwd=cwd.replace('binaries', r'binaries\Web Widget.exe')
+        
+            subprocess.Popen([cwd])
+            
+            dlg.close()    
+            Closing.Close()
+
+        else:
+            Variables.needExit=False
+            
+            dlg.close()
+            Closing.Close() 
     
     def SaveWidth(val):
         if val <25:
@@ -74,10 +104,34 @@ class Variables(object):
         Variables.BarColor=val
 
     def SaveDefaultUrl(val):
-        Variables.DefaultPage=val
         
-    def SaveHomeUrl(val):        
-        Variables.Home=val
+        val=str(val)
+        
+        if val.find(r".com") != -1 and (val.find(r"https://www.") == -1 or val.find(r"https://") == -1 or val.find(r"www.") == -1):
+            val=str(r"https://{}").format(val)
+            Variables.DefaultPage=val
+
+        elif val.find(r".com") == -1 or val.find(r"https://www.") == -1 or val.find(r"https://") == -1 or val.find(r"www.") == -1:
+            val=str(r"https://www.google.com/search?q={}").format(val)
+            Variables.DefaultPage=val
+            
+        else:  
+            Variables.DefaultPage=val
+                
+    def SaveHomeUrl(val):
+        
+        val=str(val)
+        
+        if val.find(r".com") != -1 and (val.find(r"https://www.") == -1 or val.find(r"https://") == -1 or val.find(r"www.") == -1):
+            val=str(r"https://{}").format(val)
+            Variables.Home=val
+
+        elif val.find(r".com") == -1 or val.find(r"https://www.") == -1 or val.find(r"https://") == -1 or val.find(r"www.") == -1:
+            val=str(r"https://www.google.com/search?q={}").format(val)
+            Variables.Home=val
+            
+        else:  
+            Variables.Home=val        
     
     def SavePeriodicallyReloadURL(val):
         Variables.PeriodicallyReloadURL=val
@@ -119,22 +173,23 @@ class Variables(object):
                 json.dump(data, outfile)
         except:
             win32api.MessageBox(0, 'Unable to write to file: Access is denied.', 'Error')
-
-        Variables.needExit=True
-
-        cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
-        cwd=cwd.replace('binaries', r'binaries\Web Widget.exe')
+            
         
-        subprocess.Popen([cwd])
-                
-        Closing.Close()
+        Variables.button_clicked()
 
-        #os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
+        #Variables.needExit=True
+
+        #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+        #cwd=cwd.replace('binaries', r'binaries\Web Widget.exe')
+        
+        #subprocess.Popen([cwd])
+                
+        #Closing.Close()
         
     def ResetALL():
         data={
                 "DefaultPage": "https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
-                "Home": "https://www.google.com/",
+                "Home": "https://www.bing.com/news",
                 "TextColor": "blue",
                 "BarColor": "#bcccd6",
                 "UserSizeW": 54,
@@ -170,17 +225,17 @@ class Variables(object):
                 json.dump(data, outfile)
         except:
             win32api.MessageBox(0, 'Unable to write to file: Access is denied.', 'Error')
+            
+        Variables.button_clicked()
 
-        Variables.needExit=True
+        #Variables.needExit=True
                 
-        cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
-        cwd=cwd.replace('binaries', r'binaries\Web Widget.exe')
+        #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+        #cwd=cwd.replace('binaries', r'binaries\Web Widget.exe')
         
-        subprocess.Popen([cwd])
+        #subprocess.Popen([cwd])
         
-        Closing.Close()
-
-        #os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
+        #Closing.Close()
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -190,6 +245,9 @@ class Ui_MainWindow(object):
         #MainWindow.resize(520, 491)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setStyleSheet("background-color: rgb(170, 170, 127);")
+        
+        MainWindow.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -506,7 +564,10 @@ class Ui_MainWindow(object):
         cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
         cwd=cwd.replace(r'binaries', r'ico\ico48.ico')
         
-        MainWindow.setWindowIcon(QtGui.QIcon(cwd))
+        try:
+            MainWindow.setWindowIcon(QtGui.QIcon(cwd))
+        except:
+            pass
 
         self.checkBox.setCheckState(Variables.AlwaysOnTop)
         self.checkBox_2.setCheckState(Variables.PeriodicallyReloadURL)

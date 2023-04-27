@@ -3,7 +3,9 @@ import sys
 import os
 import getpass
 import threading
+import playsound
 
+from playsound import *
 from Settings import Closing
 from Settings import Variables
 from Settings import Ui_MainWindow
@@ -50,7 +52,7 @@ class RegStart():
 
 class MainVariables(object):
     DefaultPage='https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar'
-    Home='https://www.google.com/'
+    Home='https://www.bing.com/news'
     TextColor='blue'
     BarColor='#bcccd6'
 
@@ -70,6 +72,10 @@ class MainVariables(object):
     Data={}
     
     CurrentURL=''
+    
+        
+    Sound = str(os.path.dirname(os.path.realpath(__file__))) # pasta atual
+    Sound=str(Sound.replace(r'binaries', r'Audio\413168.wav'))
     
     def openSaveFile():
         #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
@@ -97,7 +103,7 @@ class MainVariables(object):
             else:
                 data={
                     "DefaultPage": "https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
-                    "Home": "https://www.google.com/",
+                    "Home": "https://www.bing.com/news",
                     "TextColor": "blue",
                     "BarColor": "#bcccd6",
                     "UserSizeW": 54,
@@ -157,6 +163,26 @@ class WebEnginePage(QtWebEngineWidgets.QWebEnginePage):
         page.deleteLater()
         
 class CSettings(QMainWindow):
+    def UpdateVariables(self):
+        
+        MainVariables.openSaveFile()
+        
+        Variables.AlwaysOnTop=MainVariables.AlwaysOnTop
+        
+        Variables.UserSizeH=MainVariables.UserSizeH
+        Variables.UserSizeW=MainVariables.UserSizeW
+        Variables.Opacity=MainVariables.Opacity
+
+        Variables.TextColor=MainVariables.TextColor
+        Variables.BarColor=MainVariables.BarColor
+        Variables.DefaultPage=MainVariables.DefaultPage
+        Variables.Home=MainVariables.Home
+        
+        Variables.Display_offset=MainVariables.Display_offset
+        Variables.Height_offset=MainVariables.Height_offset
+        
+        Variables.PeriodicallyReloadURL=MainVariables.PeriodicallyReloadURL
+
     def __init__(self, parent=None):
         super(CSettings, self).__init__(parent)
         
@@ -365,8 +391,11 @@ class MWindow(QMainWindow):
         cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
         cwd=cwd.replace('binaries', r'ico\ico32.ico')
 
-        
-        trayicon = QSystemTrayIcon(QIcon(cwd), parent=app)
+        try:
+            trayicon = QSystemTrayIcon(QIcon(cwd), parent=app)
+        except:
+            pass
+
         trayicon.setToolTip('Web Widget is running!')
         trayicon.show()
         
@@ -420,7 +449,7 @@ class MWindow(QMainWindow):
 
         self.browser.page().loadStarted.connect(lambda:
             self.loadStartedHandler())
-                               
+                             
     def SaveCurrentURL(self, x):
         MainVariables.CurrentURL=str(x)
 
@@ -457,14 +486,22 @@ class MWindow(QMainWindow):
             self.browser.setUrl(QUrl(url))
         
     def update_url(self, q):
+        try:
+            playsound(MainVariables.Sound)
+        except:
+            pass
+
         self.url_bar.setText(q.toString())
     
     def Settings(self):
         if SetSettingsWindow.Q2SettingsWindow == None:
             
+            CSettings.UpdateVariables(self)
             SetSettingsWindow.Q2SettingsWindow=CSettings(self)
             
         else:
+            Variables.needExit=False
+            
             Closing.Close()
             
             SetSettingsWindow.Q2SettingsWindow=None
@@ -472,7 +509,15 @@ class MWindow(QMainWindow):
             time.sleep(0.25)
             
             self.Settings()
-        
+
+    def mousePressEvent(self, event):
+	    self.oldPosition = event.globalPos()
+
+    def mouseMoveEvent(self, event):
+        delta = QPoint(event.globalPos() - self.oldPosition)
+        self.move(self.x() + delta.x(), self.y() + delta.y())
+        self.oldPosition = event.globalPos()
+
     def Close(self):
         self.close()
         quit()
