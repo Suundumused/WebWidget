@@ -38,6 +38,8 @@ class Variables(object):
     Display_offset=0
     Height_offset=0
     PeriodicallyReloadURL=0
+    PosX_offset=0
+    PosY_offset=0
     
     needExit=False
     
@@ -148,7 +150,9 @@ class Variables(object):
                 "AlwaysOnTop": Variables.AlwaysOnTop,
                 "Display_offset":Variables.Display_offset,
                 "Height_offset":Variables.Height_offset,
-                "PeriodicallyReloadURL":Variables.PeriodicallyReloadURL
+                "PeriodicallyReloadURL":Variables.PeriodicallyReloadURL,
+                "PosX_offset":Variables.PosX_offset,
+                "PosY_offset":Variables.PosY_offset
         }
         
         #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
@@ -162,7 +166,7 @@ class Variables(object):
             cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
                 
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings'))
         except:
@@ -188,8 +192,8 @@ class Variables(object):
         
     def ResetALL():
         data={
-                "DefaultPage": "https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
-                "Home": "https://www.bing.com/news",
+                "DefaultPage": r"https://www.bing.com/news%3Fq=world+news%26FORM=NSBABR",
+                "Home": r"https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
                 "TextColor": "blue",
                 "BarColor": "#bcccd6",
                 "UserSizeW": 54,
@@ -198,10 +202,10 @@ class Variables(object):
                 "AlwaysOnTop": 0,
                 "Display_offset":0,
                 "Height_offset":0,
-                "PeriodicallyReloadURL":2
+                "PeriodicallyReloadURL":2,
+                "PosX_offset": 0,
+                "PosY_offset":0
         }
-        
-        print(data)
         
         #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
         #cwd=str(str(cwd) + r'\Settings\Settings.json')
@@ -214,7 +218,7 @@ class Variables(object):
             cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
                 
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings'))
         except:
@@ -682,5 +686,4 @@ class Closing(object):
                 x=str(window.objectName)
 
                 if 'MWindow' not in x:
-                    #print(window.objectName)
                     window.close()

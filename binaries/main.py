@@ -45,14 +45,13 @@ class RegStart():
         
         if file_path == "":
             file_path =finalpath
-            print(file_path)
         bat_path = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % USER_NAME
         with open(bat_path + '\\' + "WebWidget.bat", "w+") as bat_file:
             bat_file.write(r'start "" "%s"' % file_path)
 
 class MainVariables(object):
-    DefaultPage='https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar'
-    Home='https://www.bing.com/news'
+    DefaultPage=r'https://www.bing.com/news%3Fq=world+news%26FORM=NSBABR'
+    Home=r'https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar'
     TextColor='blue'
     BarColor='#bcccd6'
 
@@ -65,6 +64,9 @@ class MainVariables(object):
     
     Display_offset=0
     Height_offset=0
+    
+    PosX_offset=0
+    PosY_offset=0
     
     FisrtAccess=False
     toReload=False
@@ -87,7 +89,7 @@ class MainVariables(object):
             cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
                 
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings'))
                 MainVariables.FisrtAccess=True
@@ -99,11 +101,11 @@ class MainVariables(object):
             cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
                 
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings\Settings.json')):
-                print('')
+                pass
             else:
                 data={
-                    "DefaultPage": "https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
-                    "Home": "https://www.bing.com/news",
+                    "DefaultPage": r"https://www.bing.com/news%3Fq=world+news%26FORM=NSBABR",
+                    "Home": r"https://www.msn.com/pt-br/feed?ocid=winp2fptaskbar",
                     "TextColor": "blue",
                     "BarColor": "#bcccd6",
                     "UserSizeW": 54,
@@ -112,7 +114,9 @@ class MainVariables(object):
                     "AlwaysOnTop": 0,
                     "Display_offset":0,
                     "Height_offset":0,
-                    "PeriodicallyReloadURL":2
+                    "PeriodicallyReloadURL":2,
+                    "PosX_offset":0,
+                    "PosY_offset":0
                 }
 
                 with open(cwd, 'w') as outfile:
@@ -139,6 +143,8 @@ class MainVariables(object):
             MainVariables.Display_offset=MainVariables.Data['Display_offset']
             MainVariables.Height_offset=MainVariables.Data['Height_offset']
             MainVariables.PeriodicallyReloadURL=MainVariables.Data['PeriodicallyReloadURL']
+            MainVariables.PosX_offset=MainVariables.Data['PosX_offset']
+            MainVariables.PosX_offset=MainVariables.Data['PosY_offset']
 
         except:
             win32api.MessageBox(0, 'Unable to access settings: Access is denied or corrupted file.', 'Error')
@@ -182,6 +188,8 @@ class CSettings(QMainWindow):
         Variables.Height_offset=MainVariables.Height_offset
         
         Variables.PeriodicallyReloadURL=MainVariables.PeriodicallyReloadURL
+        Variables.PosX_offset=MainVariables.PosX_offset
+        Variables.PosY_offset=MainVariables.PosY_offset
 
     def __init__(self, parent=None):
         super(CSettings, self).__init__(parent)
@@ -201,6 +209,8 @@ class CSettings(QMainWindow):
         Variables.Height_offset=MainVariables.Height_offset
         
         Variables.PeriodicallyReloadURL=MainVariables.PeriodicallyReloadURL
+        Variables.PosX_offset=MainVariables.PosX_offset
+        Variables.PosY_offset=MainVariables.PosY_offset
         
         self.window = QtWidgets.QMainWindow()  
         self.ui = Ui_MainWindow()
@@ -210,6 +220,8 @@ class CSettings(QMainWindow):
 class MWindow(QMainWindow):
     def __init__(self):
         super(MWindow, self).__init__()
+
+        self.settings = QSettings( 'Suundumused', 'Web Widget')     
         
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Cache')):
@@ -222,7 +234,7 @@ class MWindow(QMainWindow):
              if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage')):
                  shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage')))
         except:
-             #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Storage": Access is denied.', 'Error')
+            #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\Storage": Access is denied.', 'Error')
             time.sleep(3)
 
         try:                
@@ -237,7 +249,7 @@ class MWindow(QMainWindow):
                 shutil.rmtree((str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropStorage')))
         except:
             #win32api.MessageBox(0, r'Unable to delete folder "\Documents\WebWidget\DropStorage": Access is denied.', 'Error') 
-            time.sleep(3)
+            pass
         
         MainVariables.openSaveFile()
 
@@ -250,7 +262,7 @@ class MWindow(QMainWindow):
         
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Cache')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Cache'))
         except:
@@ -258,7 +270,7 @@ class MWindow(QMainWindow):
             
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage'))
         except:
@@ -266,7 +278,7 @@ class MWindow(QMainWindow):
             
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropCache')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropCache'))
         except:
@@ -274,13 +286,16 @@ class MWindow(QMainWindow):
             
         try:                
             if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropStorage')):
-                print('')
+                pass
             else:
                 os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\DropStorage'))
         except:
             win32api.MessageBox(0, r'Unable to create folder "\Documents\WebWidget\DropStorage": Access is denied.', 'Error')          
                 
-        profile = QWebEngineProfile("my_profile", self.browser)
+        self.profile = QtWebEngineWidgets.QWebEngineProfile.defaultProfile()
+        #profile = QWebEngineProfile("my_profile", self.browser)
+        
+        profile=self.profile
         
         profile.defaultProfile().setPersistentCookiesPolicy(QWebEngineProfile.NoPersistentCookies)
         
@@ -292,8 +307,12 @@ class MWindow(QMainWindow):
         profile.setPersistentStoragePath(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Storage'))
         profile.setDownloadPath(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Downloads'))
         
-        webpage = QWebEnginePage(profile, self.browser)
-        webpage.settings().setAttribute(QWebEngineSettings.PlaybackRequiresUserGesture, True)
+        self.webpage = QWebEnginePage(profile, self.browser)
+        self.webpage.settings().setAttribute(QWebEngineSettings.PlaybackRequiresUserGesture, True)
+        
+        self.webpage.javaScriptConsoleMessage = self.javaScriptConsoleMessage
+        self.webpage.createWindow = self.createWindow
+        self.webpage.on_url_changed=self.on_url_changed
                 
         self.setContentsMargins(0,1,0,0)
         
@@ -305,8 +324,8 @@ class MWindow(QMainWindow):
         self.vbox.setSpacing(0)
         self.Parent.setLayout(self.vbox)
                 
-        page = WebEnginePage(self.browser)
-        self.browser.setPage(page)
+        #page = WebEnginePage(self.browser)
+        self.browser.setPage(self.webpage)
         self.browser.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
         self.browser.setStyleSheet("color: black; background-color: #aaaa7f;")
         self.setStyleSheet("color: black; background-color:"+MainVariables.BarColor+";")
@@ -388,6 +407,9 @@ class MWindow(QMainWindow):
         self.setWindowTitle("Web Widget")
         self.setGeometry((50+MainVariables.Display_offset), (MainVariables.Height_offset+50), round(MainVariables.UserSizeW/105*width), round(MainVariables.UserSizeH/115*height))
         
+        if MainVariables.FisrtAccess != True:
+            self.move(self.settings.value("pos", QPoint(((50+MainVariables.Display_offset)-MainVariables.PosX_offset), ((MainVariables.Height_offset+50)-MainVariables.PosY_offset))))
+
         cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
         cwd=cwd.replace('binaries', r'ico\ico32.ico')
 
@@ -401,6 +423,9 @@ class MWindow(QMainWindow):
         
         menu = QMenu()
         
+        AboutAction = menu.addAction('About')
+        AboutAction.triggered.connect(self.About)
+        
         SettingsAction = menu.addAction('Settings')
         SettingsAction.triggered.connect(self.Settings)
 
@@ -412,12 +437,30 @@ class MWindow(QMainWindow):
         self.browser.page().loadStarted.connect(lambda:
             self.loadStartedHandler())
 
+
+        app.aboutToQuit.connect(self.onAboutToQuit)
+
         self.browser.load(QtCore.QUrl(MainVariables.DefaultPage))
 
         if MainVariables.FisrtAccess == True:
             RegStart.add_to_startup("")
             
         self.show()
+        
+    def javaScriptConsoleMessage(self, level, msg, line, sourceID):
+        pass
+    
+    def createWindow(self, _type):
+        page = WebEnginePage(self)
+        page.urlChanged.connect(self.on_url_changed)
+        return page
+
+    @QtCore.pyqtSlot(QtCore.QUrl)
+    def on_url_changed(self, url):
+        page = self.sender()
+        #self.setUrl(url)
+        self.browser.setUrl(url)
+        page.deleteLater()
 
     def loadStartedHandler(self):
         self.browser.page().loadStarted.disconnect()
@@ -426,6 +469,105 @@ class MWindow(QMainWindow):
         
         self.browser.page().loadProgress.connect(lambda:
             self.loadProgressHandler())
+        
+    def __del__(self):
+        # Delete the web engine page
+        del self.webpage
+        
+    def onAboutToQuit(self):
+            # Delete the cache and shader cache folders
+            try:
+                self.webpage.profile().clearHttpCache()
+            except:
+                pass
+            
+            try:
+                self.webpage.profile().clearAllVisitedLinks()
+            except:
+                pass
+            
+            try:    
+                self.webpage.profile().clearMemoryCaches = lambda: self.webpage.profile().clearHttpCache(
+                    lambda: self.webpage.profile().clearMemoryCaches(lambda: None))
+            except:
+                pass
+    
+    def About(self):
+
+        cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+        cwd=cwd.replace(r'binaries', r'ico\ico48.ico')        
+
+        dlg = QMessageBox()
+        dlg.setWindowTitle("About")
+        dlg.setText("Web Widget v1.6 by Suundumused\n\nGNU General Public License v3.0 -- @Copyright 2023\n\nSource code available at:\ngithub.com/Suundumused/WebWidget/tree/Release_1_6")
+        dlg.setStandardButtons(QMessageBox.Ok)
+        dlg.setIcon(QMessageBox.Information)
+        dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+                
+        button = dlg.exec()
+
+        if button == QMessageBox.Ok:
+            dlg.close()    
+    
+    def closeEvent(self, event):
+        # Intercept the close event and hide the main window instead of closing it
+        
+        self.settings.setValue("pos", self.pos())
+        
+        pos=self.settings.value("pos")
+        
+        CSettings.UpdateVariables(self)
+        
+        MainVariables.PosX_offset = pos.x()
+        MainVariables.PosY_offset = pos.y()
+        
+        data={
+                "DefaultPage": "{}".format(MainVariables.DefaultPage),
+                "Home": "{}".format(MainVariables.Home),
+                "TextColor": "{}".format(MainVariables.TextColor),
+                "BarColor": "{}".format(MainVariables.BarColor),
+                "UserSizeW": MainVariables.UserSizeW,
+                "UserSizeH": MainVariables.UserSizeH,
+                "Opacity": MainVariables.Opacity,
+                "AlwaysOnTop": MainVariables.AlwaysOnTop,
+                "Display_offset":MainVariables.Display_offset,
+                "Height_offset":MainVariables.Height_offset,
+                "PeriodicallyReloadURL":MainVariables.PeriodicallyReloadURL,
+                "PosX_offset":MainVariables.PosX_offset,
+                "PosY_offset":MainVariables.PosY_offset
+        }
+        
+        #cwd = os.path.dirname(os.path.realpath(__file__)) # pasta atual
+        #cwd=str(str(cwd) + r'\Settings\Settings.json')
+        
+        cwd=os.path.expanduser(os.getenv('USERPROFILE'))
+        cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
+        
+        try:
+            cwd=os.path.expanduser(os.getenv('USERPROFILE'))
+            cwd=cwd=str(str(cwd) + r'\Documents\WebWidget\Settings\Settings.json')
+                
+            if os.path.exists(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings')):
+                pass
+            else:
+                os.makedirs(str(str(os.path.expanduser(os.getenv('USERPROFILE'))) + r'\Documents\WebWidget\Settings'))
+        except:
+            win32api.MessageBox(0, r'Unable to create folder "\Documents\WebWidget\Setting": Access is denied.', 'Error')
+
+        try:
+            with open(cwd, 'w') as outfile:
+                json.dump(data, outfile)
+        except:
+            win32api.MessageBox(0, 'Unable to write to file: Access is denied.', 'Error')
+                
+        self.onAboutToQuit()
+        self.__del__()
+
+        event.ignore()
+                
+        self.hide()
+        self.close()
+        quit()
     
     def loadProgressHandler(self):
         if self.Progressbar.value() < 100:
